@@ -47,7 +47,7 @@ class Network:
       time_ms += self.l[self.idx]
 
       self.idx = (self.idx + 1) % len(self.l)
-
+    
     return time_ms * MILLI
 
   def ttd(self, n_bytes):

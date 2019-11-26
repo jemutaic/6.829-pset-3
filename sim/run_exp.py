@@ -75,6 +75,7 @@ def main(argv):
   pqs = vid.get_bitrates()
   max_pq = max(pqs)
   pqs = [100 * float(q) / max_pq for q in pqs]
+  # print("pqs: {}".format(pqs))
 
   pq_dict = {}
   for br, pq in zip(vid.get_bitrates(), pqs):
@@ -155,7 +156,8 @@ def main(argv):
     json.dump(dict(avg_quality_score=qual,
                    avg_rebuf_penalty=rp,
                    avg_smoothness_penalty=sp,
-                   avg_net_qoe=qoe),
+                   avg_net_qoe=qoe,
+                   avg_download_rate=env.get_avg_down_rate_kbps()),
               f,
               indent=4,
               sort_keys=True)

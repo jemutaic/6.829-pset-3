@@ -17,9 +17,10 @@ args = parser.parse_args()
 OUT_DIR = 'cdfs'
 
 
-def plot_cdf(ax, vals, label=''):
+def plot_cdf(ax, vals, label='', download_rates=None):
   x = sorted(vals)
   y = [i / float(len(vals)) for i in range(len(vals))]
+  # y = download_rates
   ax.plot(x, y, label=label + '(Avg: %.2f)' % np.mean(x))
   ax.legend()
 
@@ -29,7 +30,7 @@ def main():
   for mode in ['train', 'valid', 'test']:
     f, axarr = plt.subplots(2, 2)
     for run in runs:
-      rebufs, smooths, qualities, qoes = [], [], [], []
+      rebufs, smooths, qualities, qoes, download_rates = [], [], [], [], []
       d = os.path.join(args.results_dir, run, mode)
       for fname in os.listdir(d):
         with open(os.path.join(d, fname, 'results.json')) as f:
@@ -38,14 +39,15 @@ def main():
         smooths.append(j['avg_smoothness_penalty'])
         qualities.append(j['avg_quality_score'])
         qoes.append(j['avg_net_qoe'])
+        download_rates.append(j['avg_download_rate'])
 
-      plot_cdf(axarr[0][0], qualities, label=run)
+      plot_cdf(axarr[0][0], qualities, label=run, download_rates=download_rates)
       axarr[0][0].set_xlabel('quality score')
-      plot_cdf(axarr[0][1], rebufs, label=run)
+      plot_cdf(axarr[0][1], rebufs, label=run, download_rates=download_rates)
       axarr[0][1].set_xlabel('rebuf penalty')
-      plot_cdf(axarr[1][0], smooths, label=run)
+      plot_cdf(axarr[1][0], smooths, label=run, download_rates=download_rates)
       axarr[1][0].set_xlabel('smooth penalty')
-      plot_cdf(axarr[1][1], qoes, label=run)
+      plot_cdf(axarr[1][1], qoes, label=run, download_rates=download_rates)
       axarr[1][1].set_xlabel('net qoe')
 
     plt.tight_layout()
